@@ -1,0 +1,13 @@
+{
+    "SLO5: Comments": "Program including clear and meaningful comments.",
+    "SLO5: Naming conventions": "Designing meaningful variable, function, and object names and following standard language conventions.",
+    "SLO5: Code readability and formatting": "Code formatting, organization, and other stylistic choices that support readers in understanding your code.",
+    "SLO1: Algorithmic solutions": "Constructing appropriate algorithmic solutions to computational problems",
+    "SLO1: Logic": "Defining appropriate logical flow and choosing appropriate control structures",
+    "SLO1: Testing": "Designing and writing effective tests for programs",
+    "SLO1: Error handling": "Identifying and handling errors",
+    "SLO1: Correctness: reasoning": "Reasoning about correctness of the program (i.e., capability of explaining how and why it works)",
+    "SLO1: Data structures": "N/A",
+    "SLO1: Algorithm analysis": "N/A",
+    "SLO1: Syntax": "N/A"
+}

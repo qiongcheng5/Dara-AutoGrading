@@ -1,0 +1,72 @@
+[
+    {
+        "question_col": "Assume that we have defined the binary tree node, BTNode, that includes methods, isLeaf(), getLeftChild(), and getRightChild(). Also assume that we have declared the LinkedBinaryTree class that includes a reference variable referring to the root node of a tree.\n\nCopy the following code, paste it to the input textbox, and replace those dots with proper comments to help users better understand this method, leafCounter(), in the LinkedBinaryTree class.\n// ......\nprivate int leafCounter(BTNodeT node) {\n    // ......    if (node==null) return 0;\n    // ......\n    if (node.isLeaf()) return 1;\n    // ......    return leafCounter(node.getLeftChild()) + leafCounter(node.getRightChild());}",
+        "SLO_name": "SLO5: Comments",
+        "max_score": 10
+    },
+    {
+        "question_col": "Assume that we have defined the ConcertTicket class.\nA Wallet class includes two data member variables:\n  public ConcertTicket[] tickets = new ConcertTicket[10 ];  private int size = 0;\n\nCopy the following code, paste it to the input textbox, and replace those dots with proper comments to help users better understand this method, remove(), in the Wallet class.\n  // ......\n  public ConcertTicket remove() {\n    // ......    ConcertTicket ticket = null;\n    if (this.size  0) {      // ......      ticket = this.tickets[this.size - 1];\n      // ......      this.tickets[this.size - 1] = null;           // ......      this.size = this.size - 1;    }    // ......    return ticket;  }",
+        "SLO_name": "SLO5: Comments",
+        "max_score": 10
+    },
+    {
+        "question_col": "We'll say that a value is \"everywhere\" in an array if for every pair of adjacent elements in the array, at least one of the pair is that value. Return true if the given value is everywhere in the array.\n\nCopy the following code, paste it to the input textbox, and fill in statements to make this method complete.\npublic boolean isEverywhere(int[] nums, int val) {\n }",
+        "SLO_name": "SLO5: Code readability and formatting",
+        "max_score": 10
+    },
+    {
+        "question_col": "There exists an abstract classBird.\n\n\n\n\n\n\npublic abstract class Bird {\n\n  public Bird() {}\n  public String eat() {\n     return \"worms\";\n  }\n  public abstract double fly();\n\n}\n\n\n\n\n\n\nCreate a subclass of Bird called Sparrow. Overwrite the eat() method so that the Sparrow eats \"seeds\". Implement the fly() method so that it returns its altitude of 4.13 meter\n\nCopy the code, paste it to the input textbox, and fill in statements to make this class complete.\npublic class Sparrow extends Bird {  public Sparrow() {super();}\n\n\n\n}",
+        "SLO_name": "SLO5: Code readability and formatting",
+        "max_score": 10
+    },
+    {
+        "question_col": "Design an algorithm, defined as countDivisibles(), to find the numbers divisible by a given array of numbers, div[] between a range from 1 to N, including N (, where N is also given).\n\nThe function prototype is as following:\npublic int countDivisibles(int [] div, int N);\n\nFor example,\nThe result of countDivisibles([2, 3], 10) is 7 (since we have 2, 3, 4, 6, 8, 9, and 10 divisible by either 2 or 3.\n\nNote that in this question, you are only expected to write pseudo code and reason your algorithm selection (or explain your idea).",
+        "SLO_name": "SLO1: Algorithmic solutions",
+        "max_score": 10
+    },
+    {
+        "question_col": "Design an algorithm, named countDivisibles(), that aims atfinding the numbers divisible by a given array of numbers, div[] between a range from 1 to N, including N (, where N is also given).\n\nThe function prototype is as following:\npublic int countDivisibles(int [] div, int N);\n\nFor example,\nThe result of countDivisibles([2, 3], 10) is 7 (since we have 2, 3, 4, 6, 8, 9, and 10 divisible by either 2 or 3.\n\nNote that in this question, you are expected to write Java code to make this method complete. For simplicity, you could assume that the arguments passed to the method invocation are valid.",
+        "SLO_name": "SLO1: Logic",
+        "max_score": 10
+    },
+    {
+        "question_col": "Write JUnit test methods for the method, countDivisibles() that you wrote in the previous question.\n\nThe function prototype is as following:\npublic int countDivisibles(int [] div, int N);\nThis function aims at finding the numbers divisible by a given array of numbers, div[] between a range from 1 to N, including N.",
+        "SLO_name": "SLO1: Testing",
+        "max_score": 10
+    },
+    {
+        "question_col": "In this question, you are expected to continue working on the method countDivisibles() with consideration into the reliability . Please validate all input arguments and handle errors.\n\nThe function prototype is as following:\npublic int countDivisibles(int [] div, int N);\nThis function aims at finding the numbers divisible by a given array of numbers, div[] between a range from 1 to N, including N.\n\nNote that you do not need to write this method from scratch. Please reuse your code in the previous question and update the code to make is complete, correct, and reliable.",
+        "SLO_name": "SLO1: Error handling",
+        "max_score": 10
+    },
+    {
+        "question_col": "In this question, you are expected to continue working on the method countDivisibles() with consideration into reasoning the correctness of your algorithm and its time complexity, including how you address boundary cases.\n\nThe function prototype is as following:\npublic int countDivisibles(int [] div, int N);\nThis function aims at finding the numbers divisible by a given array of numbers, div[] between a range from 1 to N, including N.\n\nNote that it is okay to use your language and the terms that you learned this semester to explain the correctness and its time complexity",
+        "SLO_name": "SLO1: Correctness: reasoning",
+        "max_score": 10
+    },
+    {
+        "question_col": "For this question, a list of integers calledlist is passed in as a parameter. Implement this method, named reverseArray(), so that it creates and returns a new list containing the items in the reverse order of the original list. \nAs for the result, create a new ArrayListIntegerto hold your answer, and add the items from the original list to it in reverse order. For example, given [5, 3, 4, 2, 9, 2], this method would return [2, 9, 2, 4, 3, 5].\n\nThe function prototype is as following:\npublic ListInteger reverseArray(ListInteger arr);\n\nNote that in this question, you are only expected to write pseudo code and reason your algorithm selection (or explain your idea).",
+        "SLO_name": "SLO1: Algorithmic solutions",
+        "max_score": 10
+    },
+    {
+        "question_col": "For this question, a list of integers calledlist is passed in as a parameter. Implement this method, named reverseArray(), so that it creates and returns a new list containing the items in the reverse order of the original list. \nAs for the result, create a new ArrayListIntegerto hold your answer, and add the items from the original list to it in reverse order. For example, given [5, 3, 4, 2, 9, 2], this method would return [2, 9, 2, 4, 3, 5].\n\nThe function prototype is as following:\npublic ListInteger reverseArray(ListInteger arr);\n\nNote that in this question, you are expected to write Java code to make this method complete. For simplicity, you could assume that the arguments passed to the method invocation are valid.",
+        "SLO_name": "SLO1: Logic",
+        "max_score": 10
+    },
+    {
+        "question_col": "Write JUnit test method(s) for the method, reverseArray() that you wrote in the previous question.\n\nThe function prototype is as following:\npublic ListInteger reverseArray(ListInteger arr);\nThis function aims at creating and returning a new list containing the items in the reverse order of the given original list.",
+        "SLO_name": "SLO1: Testing",
+        "max_score": 10
+    },
+    {
+        "question_col": "In this question, you are expected to continue working on the method reverseArray() with consideration into the reliability. Please validate all input arguments and handle errors.\n\nThe function prototype is as following:\npublic ListInteger reverseArray(ListInteger arr);\nThis function aims at creating and returning a new list containing the items in the reverse order of the given original list.\n\nNote that you do not need to write this method from scratch. Please reuse your code in the previous question and update the code to make is complete, correct, and reliable.",
+        "SLO_name": "SLO1: Error handling",
+        "max_score": 10
+    },
+    {
+        "question_col": "In this question, you are expected to continue working on the method reverseArray() with consideration into reasoning the correctness of your algorithm and its time complexity, including how you address boundary cases.\n\nThe function prototype is as following:\npublic ListInteger reverseArray(ListInteger arr);\nThis function aims at creating and returning a new list containing the items in the reverse order of the given original list.\n\nNote that it is okay to use your language and the terms that you learned this semester to explain the correctness and its time complexity.",
+        "SLO_name": "SLO1: Correctness: reasoning",
+        "max_score": 10
+    }
+]
