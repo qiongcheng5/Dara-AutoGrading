@@ -80,10 +80,10 @@ def main():
     # Read the CSV file using pandas
     data = pd.read_csv(file_path,delimiter=',', encoding='ISO-8859-1')
 
-    def extract_question(column_name):
-        return column_name.split(': ', 1)[-1]
+    # def extract_question(column_name):
+    #     return column_name.split(': ', 1)[-1]
 
-    data = data.rename(columns=lambda x: extract_question(x) if ': ' in x else x)
+    # data = data.rename(columns=lambda x: extract_question(x) if ': ' in x else x)
 
     all_dfs = []
     all_dfs_gradedetails = []

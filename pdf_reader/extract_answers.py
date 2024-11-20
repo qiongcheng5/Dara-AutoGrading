@@ -53,10 +53,40 @@ def extract_text_from_pdf(pdf_path):
         text += completion.choices[0].message.content
     return text
 
+def convert_to_latex(text):
+    """Convert HTML-based math tags to LaTeX equivalents."""
+    soup = BeautifulSoup(text, "html.parser")
+
+    # Convert <sup> tags to LaTeX format for exponents
+    for sup in soup.find_all("sup"):
+        latex_sup = f"^{{{sup.get_text()}}}"
+        sup.replace_with(latex_sup)  # Replace <sup> tag content with LaTeX syntax
+
+    # Convert <sub> tags to LaTeX format for subscripts
+    for sub in soup.find_all("sub"):
+        latex_sub = f"_{{{sub.get_text()}}}"
+        sub.replace_with(latex_sub)  # Replace <sub> tag content with LaTeX syntax
+
+    # Convert <span class="frac"> to LaTeX format for fractions
+    for frac in soup.find_all("span", class_="frac"):
+        numerator = frac.find("span", class_="num")
+        denominator = frac.find("span", class_="den")
+        if numerator and denominator:
+            latex_frac = r"\frac{" + numerator.get_text() + "}{" + denominator.get_text() + "}"
+            frac.replace_with(latex_frac)  # Replace <span class="frac"> with LaTeX syntax
+
+    # Convert <span class="sqrt"> to LaTeX format for square roots
+    for sqrt in soup.find_all("span", class_="sqrt"):
+        latex_sqrt = r"\sqrt{" + sqrt.get_text() + "}"
+        sqrt.replace_with(latex_sqrt)  # Replace <span class="sqrt"> with LaTeX syntax
+
+    return soup.get_text()
+
 def extract_text_from_html(html_path):
     with open(html_path, "r", encoding="utf-8") as file:
-        soup = BeautifulSoup(file, "html.parser")
-        return soup.get_text()
+        html_content = file.read()
+        latex_text = convert_to_latex(html_content)
+        return latex_text
 
 def extract_text_from_image(image_path):
     with open(image_path, "rb") as img_file:
@@ -122,7 +152,7 @@ def extract_student_answers(questions, answer):
                 {
                     "type": "text",
                     "text": f"Given the answers {answer} written by students for questions {questions} , "
-                            f"give me what student has answered for each question as it is, separated by `###`. Format like this:\n"
+                            f"give me what student has answered for each question without manipulating text and complete text till the start of next question, separated by `###`. Format like this:\n"
                             "1. [Answer to question 1]\n###\n2. [Answer to question 2]\n### ...and so on."
 
                 },
@@ -145,7 +175,6 @@ def read_questions(file_path):
 
 def process_file_parallel(file_name, folder_path, api_key, pseudo_questions):
     try:
-        print("yess")
         file_path = os.path.join(folder_path, file_name)
         student_id, student_name = extract_name_and_id(file_name)
         answers = extract_student_answers(pseudo_questions, process_file(file_path))
