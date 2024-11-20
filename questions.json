@@ -1,0 +1,92 @@
+[
+    {
+        "question_col": "Which function has a higher asymptotic order, ln^2*n and 5lg(n+1000)^4",
+        "Rubric_name": "Rubrics1: Asymptotic Order",
+        "max_score": 3
+    },
+    {
+        "question_col": "Which function has a higher asymptotic order, 0.001 x n^4 + 3n^3 + 1  or  3000000n^3 ?",
+        "Rubric_name": "Rubrics2: Asymptotic Order",
+        "max_score": 3
+    },
+    {
+        "question_col": "Which function has a higher asymptotic order, 3^n  or  2^2n ?",
+        "Rubric_name": "Rubrics3: Asymptotic Order",
+        "max_score": 3
+    },
+        {
+        "question_col": "Which function has a higher asymptotic order,  5 lg(n + 1000)^4  or  n^{1/3} ?",
+        "Rubric_name": "Rubrics4: Asymptotic Order",
+        "max_score": 3
+    },
+    {
+        "question_col": "Identify the lowest and highest order of growth among the following functions:\n- ln^2 n\n- n^{1/3} \n- 3^n\n- 2^2n\n- 0.001*n^4 + 3n^3 + 1\n- 5 lg (n + 1000)^4\n- (n-1)!\n",
+        "Rubric_name": "Rubrics5: Asymptotic Order",
+        "max_score": 3
+    },
+    {
+        "question_col": "List the following functions according to their order of growth from the lowest to highest:\nln^2 n, n^{1/3}, 3^n, 2^2n, 0.001*n4 + 3n^3 + 1, 5 lg (n+1000)^4, (n-1)!",
+        "Rubric_name": "Rubrics6: Asymptotic Order",
+        "max_score": 3
+    },
+    {
+        "question_col": "1. Solve the following recurrence relation using substitution method: x(n) = x(n-1) + 5 for n > 1, with x(1) = 0.",
+        "Rubric_name": "Rubrics1: Asymptotic Analysis",
+        "max_score": 10
+    },
+    {
+        "question_col": "2. Solve the following recurrence relation using substitution method: x(n) = 3x(n-1) for n >= 1, with x(1) = 4.",
+        "Rubric_name": "Rubrics2: Asymptotic Analysis",
+        "max_score": 10
+    },
+    {
+        "question_col": "3. Solve the following recurrence relation using substitution method: x(n) = x(n-1) + n for n > 0, with x(0) = 0.",
+        "Rubric_name": "Rubrics3: Asymptotic Analysis",
+        "max_score": 10
+    },
+    {
+        "question_col": "4. Solve the following recurrence relation using substitution method: x(n) = n * x(n/3) + n for n > 1, with x(1) = 1 (solve for n=2^k).",
+        "Rubric_name": "Rubrics4: Asymptotic Analysis",
+        "max_score": 10
+    },
+    {
+        "question_col": "5. Solve the following recurrence relation using substitution method: x(n) = n * x(n/3) + n for n > 1, with x(1) = 1 (solve for n=3^k).",
+        "Rubric_name": "Rubrics5: Asymptotic Analysis",
+        "max_score": 10
+    },
+    {
+        "question_col": "6. Set up a recurrence relation for the values of the function Q(n) and solve it to determine what this algorithm computes.",
+        "Rubric_name": "Rubrics6: Asymptotic Analysis",
+        "max_score": 10
+    },
+    {
+        "question_col": "7. Set up a recurrence relation for the number of multiplications made by this algorithm and solve it.",
+        "Rubric_name": "Rubrics7: Asymptotic Analysis",
+        "max_score": 10
+    },
+    {
+        "question_col": "8. Set up a recurrence relation for the number of additions/subtractions made by this algorithm and solve it.",
+        "Rubric_name": "Rubrics8: Asymptotic Analysis",
+        "max_score": 10
+    },
+    {
+        "question_col": "9. Show that the solution of T(N) = 4T(N/2) + N is T(N) = O(N^2) using the master method.",
+        "Rubric_name": "Rubrics9: Asymptotic Analysis",
+        "max_score": 10
+    },
+    {
+        "question_col": "10. Show that the solution of T(N) = 2T(N/2) + N is T(N) = O(N log N) using the master method.",
+        "Rubric_name": "Rubrics10: Asymptotic Analysis",
+        "max_score": 10
+    },
+    {
+        "question_col": "11. Show that the solution of T(N) = 2T(N/2) + N^2 is T(N) = O(N^2) using the master method.",
+        "Rubric_name": "Rubrics11: Asymptotic Analysis",
+        "max_score": 10
+    },
+    {
+        "question_col": "12. Show that the solution of T(N) = 2T(N/2) + log2N is T(N) = O(N) using the master method.",
+        "Rubric_name": "Rubrics12: Asymptotic Analysis",
+        "max_score": 10
+    }
+]
