@@ -1,15 +1,55 @@
-
+import csv
 import json
 import re
 
-from openai import OpenAI
+
 from retry import retry
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
-import os
 import pandas as pd
-import math
 from functools import reduce
+import math
+import numpy as np
+import os
+import kdbai_client as kdbai
+import nest_asyncio
+from openai import OpenAI
+from llama_index.embeddings.openai import OpenAIEmbedding
+from ragas.dataset_schema import SingleTurnSample
+
+nest_asyncio.apply()
+
+os.environ[
+    "LLAMA_CLOUD_API_KEY"] = "llama key"  # getpass("LlamaParse API Key: ")
+os.environ[
+    "OPENAI_API_KEY"] = "open ai key"  # getpass("OpenAI API Key: ")
+
+KDBAI_ENDPOINT = "kdb endpoint"
+KDBAI_API_KEY = "kdb key"
+create = False
+
+session = kdbai.Session(api_key=KDBAI_API_KEY, endpoint=KDBAI_ENDPOINT)
+test_data_samples = []
+# Define the schema for the KDB.AI table
+schema = [
+    {"name": "document_id", "type": "str"},
+    {"name": "text", "type": "str"},
+    {"name": "embeddings", "type": "float32s"},
+]
+
+# Define the index parameters
+indexFlat = {
+    "name": "flat",
+    "type": "flat",
+    "column": "embeddings",
+    "params": {'dims': 1536, 'metric': 'L2'},
+}
+
+# Initialize the database and table
+db = session.database("default")
+table_name = "LlamaParse_Table"
+
+table = db.table(table_name)
 
 
 # Load JSON data
@@ -30,36 +70,54 @@ def load_slo():
 # Grade answers
 @retry(tries=3, delay=3)
 def grade_answer(question, answer, SLO):
-    context = "In a graduate Algorithms and Data Structures course, students are asked the following question: {} \n "\
-            "Please review the student response and assess their ability to answer the asymptotic analysis\n" \
-             "Grading Rubric:\n {}".format(question, SLO)
-
-    # context = "In a graduate Algorithms and Data Structures course, students are asked the following question: {} \n "\
-    #         "Please review the student response and assess their ability to compare the asymptotic growth rates of these" \
-    #         " two functions. \n" \
-    #         "Rate the student’s response on a scale from 0 to 3 and provide your reasoning. \n " \
-    #          "Grading Rubric:\n {}".format(question, SLO)
 
 
-    answer_msg = "Student Response:\n {}" \
-                 "Answer in format: <rating>\n<explanation>. " \
-                 "The first line should ONLY have a number for rating. The second line should have its corresponding explanation.".format(
-        answer)
-    messages = [
-        {"role": "user", "content": context},
-        {"role": "user", "content": answer_msg},
-    ]
+    query = "In a graduate Algorithms and Data Structures course, students are asked the following question: {} \n" \
+            "Please review the student response and assess their ability to answer the asymptotic analysis.\n" \
+            "Grading Rubric:\n {}\n" \
+            "Student Response:\n {}" \
+            "Answer in format: <rating>\n<explanation>. " \
+            "The first line should ONLY have a number for rating. The second line should have its corresponding explanation.".format(
+        question, SLO, answer)
+
+
+    # Retrieve the reference material
+    messages = "Here is the provided context: " + "\n"
+    results = retrieve_data(query)
+
+    if results:
+        for data in results:
+            messages += data + "\n"
+        reference = messages
+
+
+    # Combine the original query with the retrieved reference material
+    final_query = query + "\n" + reference
 
     client = OpenAI(
         # This is the default and can be omitted
-        api_key="api_key"
-    )
-    completion = client.chat.completions.create(
-        messages=messages,
-        model="gpt-4-turbo",
+        api_key="key"
     )
 
-    result = completion.choices[0].message.content
+    # Send the final query to GPT for grading
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system",
+             "content": "You will answer grade students' answer based on the provided reference material."},
+            {"role": "user", "content": final_query}
+        ],
+        max_tokens=300,
+    )
+
+
+    # completion = client.chat.completions.create(
+    #     messages=messages,
+    #     model="gpt-4-turbo",
+    # )
+
+    result = response.choices[0].message.content
+    test_data_samples.append(SingleTurnSample(user_input=query, response=result, reference=reference))
     score, explanation = result.split("\n", 1)
     # print("score - ",score, "Explaination - ", explanation)
     pattern = r'\b\d+\b'
@@ -70,8 +128,22 @@ def grade_answer(question, answer, SLO):
     return float(score), explanation
 
 
+client = OpenAI()
 
-# Assuming load_questions, load_slo, and grade_answer are already defined
+def embed_query(query):
+    embedding_model = OpenAIEmbedding()
+    embedding = embedding_model.get_text_embedding(query)  # Ensure it's the correct method to generate embeddings
+    query_embedding = np.array(embedding, dtype='float32')
+    return query_embedding
+
+def retrieve_data(query):
+    query_embedding = embed_query(query)
+    results = table.search(vectors={'flat': [query_embedding]})
+    retrieved_data_for_RAG = []
+    for index, row in results[0].iterrows():
+        retrieved_data_for_RAG.append(row['text'])
+    return retrieved_data_for_RAG
+
 
 def process_grading(q_idx, q, slo_name, slo, data):
     grade_df = []
@@ -98,6 +170,7 @@ def process_grading(q_idx, q, slo_name, slo, data):
             except Exception as e:
                 score, explanation = 0, "N/A"
             scores.append(float(score))
+            print("Row:", index, "\tIter:", i, "\tQ:", q_idx, "\tScore:", score)
             explanations.append(explanation)
             if score < lowest_score:
                 lowest_score = score
@@ -155,10 +228,12 @@ def process_grading(q_idx, q, slo_name, slo, data):
 
 
 
-def main():
+def Grade():
+    start_time = time.time()
+    print(f"Start Time: {time.ctime(start_time)}")
     questions, slo = load_questions(), load_slo()
 
-    file_path = "pdf_reader/dupli.csv"
+    file_path = "pdf_reader/all_students.csv"
     if not os.path.isfile(file_path):
         print("File not found.")
         return
@@ -202,14 +277,27 @@ def main():
     gd_df = reduce(lambda x, y: x.merge(y, on='Student Name'), [fixed_data] + all_dfs_gradedetails)
     slo_final = reduce(lambda x, y: x.merge(y, on='Student Name'), [fixed_data, slo_df])
 
-    output_path = 'pdf_reader/output_all_st.xlsx'
+    output_path = 'pdf_reader/output_RAG_all.xlsx'
     with pd.ExcelWriter(output_path) as excel_writer:
         df.to_excel(excel_writer, sheet_name='grading_details', index=False)
         gd_df.to_excel(excel_writer, sheet_name='SLOs_scores_details', index=False)
         slo_final.to_excel(excel_writer, sheet_name='SLOs_scores', index=False)
+    csv_file = "gener_all_test_data.csv"
+    with open(csv_file, "w", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+        writer.writerow(["User Query", "Model Response", "Reference Text"])
+        for sample in test_data_samples:
+            writer.writerow([sample.user_input, sample.response, sample.reference])
+
+    print(f"Test data saved to {csv_file}")
 
     print(f"Processing complete. Output saved to {output_path}")
+    end_time = time.time()
+    print(f"End Time: {time.ctime(end_time)}")
+
+    elapsed_time = end_time - start_time
+    print(f"Total Execution Time: {elapsed_time:.2f} seconds")
 
 
 if __name__ == "__main__":
-    main()
+    Grade()

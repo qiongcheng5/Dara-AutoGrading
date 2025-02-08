@@ -10,6 +10,8 @@ from openai import OpenAI  # openai version 1.1.1
 import requests
 from pdf2image import convert_from_path
 import mammoth
+os.environ[
+    "OPENAI_API_KEY"] = "key"  # getpass("OpenAI API Key: ")
 
 api_key = os.getenv('OPENAI_API_KEY')
 
@@ -51,6 +53,7 @@ def extract_text_from_pdf(pdf_path):
             max_tokens=300
         )
         text += completion.choices[0].message.content
+    print(f"extracted text from {pdf_path} -> {text}")
     return text
 
 def convert_to_latex(text):
@@ -204,10 +207,21 @@ def read_files_from_folder_parallel(folder_path, output_csv, api_key, pseudo_que
                 print(f"Error processing file {file_name}: {exc}")
 
 # Example usage:
+import time
+start_time = time.time()
+print(f"Start Time: {time.ctime(start_time)}")
 questions_path = '/Users/samhithdara/PycharmProjects/pdf_reader/actual-questions.json'
 questions_data = read_questions(questions_path)
-pseudo_questions = questions_data['pseudo_questions']
+pseudo_questions = questions_data['pseudo_num']
 folder_path = "/Users/samhithdara/PycharmProjects/pdf_reader/pdf_reader/pseudo"
-output_csv = "pseudo_parallel.csv"
+output_csv = "all_students.csv"
 
 read_files_from_folder_parallel(folder_path, output_csv, api_key, pseudo_questions)
+
+# Record the end time
+end_time = time.time()
+print(f"End Time: {time.ctime(end_time)}")
+
+# Calculate and display the elapsed time
+elapsed_time = end_time - start_time
+print(f"Total Execution Time: {elapsed_time:.2f} seconds")
