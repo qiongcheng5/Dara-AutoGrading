@@ -27,7 +27,7 @@ class GeminiImageProcessor:
 
     class Config(BaseModel):
         GOOGLE_API_KEY: str = Field(
-            default=os.getenv("GOOGLE_API_KEY", "AIzaSyAOOkMaWs6tckmxnWvnFnmX-v08grr52IE"),
+            default=os.getenv("GOOGLE_API_KEY", "key"),
             description="Your Google API key for image processing",
         )
 
