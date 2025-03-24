@@ -3,6 +3,7 @@ import math
 import numpy as np
 import os
 import kdbai_client as kdbai
+from llama_index.core import SimpleDirectoryReader, VectorStoreIndex
 from llama_parse import LlamaParse
 from langchain_openai import ChatOpenAI
 from ragas.embeddings import LangchainEmbeddingsWrapper
@@ -16,7 +17,6 @@ from ragas.dataset_schema import SingleTurnSample
 from ragas.metrics import SemanticSimilarity, BleuScore, AspectCritic  # Import SemanticSimilarity
 
 nest_asyncio.apply()
-
 os.environ[
     "LLAMA_CLOUD_API_KEY"] = "key"  # getpass("LlamaParse API Key: ")
 os.environ[
@@ -70,13 +70,13 @@ if create:
         if pdf_file_name.endswith(".pdf"):
             pdf_file_path = os.path.join(pdf_folder, pdf_file_name)
 
-            # Load documents and generate embeddings
-            parsing_instructions = '''This document contains explanations, examples, and exercises on algorithmic concepts such as sorting algorithms, divide-and-conquer strategies, dynamic programming, and their time complexities.'''
-            documents = LlamaParse(result_type="markdown", parsing_instructions=parsing_instructions).load_data(
-                pdf_file_path)
+
+            documents = SimpleDirectoryReader(pdf_file_path).load_data()
+            VectorStoreIndex.from_documents(documents)
 
             # Initialize the embedding model (assuming you're using OpenAI embeddings)
             embedding_model = OpenAIEmbedding()
+
 
             # Generate embeddings for the documents
             for doc in documents:
@@ -159,16 +159,8 @@ test_data = {
     "reference": reference
 }
 
-# # Semantic Similarity
-# scorer = SemanticSimilarity(embeddings=LangchainEmbeddingsWrapper(client))
 test_data_sample = SingleTurnSample(**test_data)
-# async def evaluate():
-#     similarity_score = await scorer.single_turn_ascore(test_data_sample)
-#     print("Semantic Similarity Score:", similarity_score)
-#
-# # Run the async function here, at the bottom
-#
-# asyncio.run(evaluate())
+
 
 
 # Run the rest of your metrics

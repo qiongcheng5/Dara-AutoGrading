@@ -1,6 +1,8 @@
 import os
 import csv
 import json
+import time
+
 from dotenv import load_dotenv
 import google.generativeai as genai
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -41,6 +43,7 @@ class GeminiImageProcessor:
             model = genai.GenerativeModel("gemini-1.5-flash")
             prompt = "Give all the text present in this image without any extra parts."
             response = model.generate_content([prompt, image_part])
+            time.sleep(3)
             return response.text
         except Exception as e:
             return f"[Error processing image: {str(e)}]"

@@ -11,6 +11,7 @@ import pandas as pd
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from functools import reduce
 from dotenv import load_dotenv
+from ragas import SingleTurnSample
 
 load_dotenv()
 # Configure Google Gemini API
@@ -19,7 +20,7 @@ genai.configure(api_key=os.getenv("GEMINI_API_KEY"))  # Replace with your actual
 # Initialize ChromaDB
 persist_directory = "/Users/samhithdara/PycharmProjects/llama/docs/chroma/"
 vectordb = Chroma(persist_directory=persist_directory)
-
+test_data_samples = []
 
 #  Retrieve context from ChromaDB
 def vector_query(query):
@@ -38,7 +39,7 @@ def vector_query(query):
 
 
 #  Grade answer using Gemini API
-def grade_answer(question, answer, SLO):
+def grade_answer(question, answer, SLO,file_name, add_new=False):
     """Uses Google Gemini to evaluate a student's response based on the given question and rubric."""
 
     print("Grading:", question)
@@ -61,7 +62,6 @@ def grade_answer(question, answer, SLO):
     model = genai.GenerativeModel("gemini-1.5-pro")  # Latest model
     max_retries = 5
     retry_delay = 10  # Start with 10 seconds delay
-
     for attempt in range(max_retries):
         try:
             response = model.generate_content([query,context_message])
@@ -73,6 +73,8 @@ def grade_answer(question, answer, SLO):
             explanation = result.split("\n", 1)[1] if "\n" in result else "No explanation provided."
 
             print(score)
+            if add_new:
+                test_data_samples.append([file_name, SingleTurnSample( user_input=query, response=result, reference=context_message)])
             return score, explanation
 
         except Exception as e:  #  Catch all exceptions
@@ -132,10 +134,13 @@ def process_grading(q_idx, q, slo_name, slo, data):
             continue
 
         scores, explanations = [], []
-        for _ in range(3):  # Run grading 3 times
+        for i in range(3):  # Run grading 3 times
             # try:
             time.sleep(3)
-            score, explanation = grade_answer(col, row[col], slo[slo_name])
+            if i==1:
+                score, explanation = grade_answer(col, row[col], slo[slo_name],row["File name"], True)
+            else:
+                score, explanation = grade_answer(col, row[col], slo[slo_name],row["File name"])
             # except Exception as e:
             #     print(e)
             #     score, explanation = 0, "N/A"
@@ -215,6 +220,12 @@ def Grade():
         df.to_excel(excel_writer, sheet_name='grading_details', index=False)
         gd_df.to_excel(excel_writer, sheet_name='SLOs_scores_details', index=False)
         slo_final.to_excel(excel_writer, sheet_name='SLOs_scores', index=False)
+    csv_file="reference_data_temp.csv"
+    with open(csv_file, "w", newline="") as file:
+        writer = csv.writer(file, escapechar="\\", quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(["File Name", "User Input", "Response", "Reference"])  # Header row
+        for sample in test_data_samples:
+            writer.writerow([sample[0], sample[1].user_input, sample[1].response, sample[1].reference])
 
     print(f"Processing complete. Output saved to {output_path}")
     print(f"Total Execution Time: {time.time() - start_time:.2f} seconds")
